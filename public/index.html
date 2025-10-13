@@ -1,47 +1,144 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Testes de Língua - Início</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <title>Dashboard Financeiro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-chart-pie"></i>
+                <h2>Dashboard</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active"><a href="#"><i class="fas fa-th-large"></i><span>Dashboard</span></a></li>
+                    <li><a href="#"><i class="fas fa-users"></i><span>Clientes</span></a></li>
+                    <li><a href="#"><i class="fas fa-file-invoice"></i><span>Faturas</span></a></li>
+                    <li><a href="#"><i class="fas fa-wallet"></i><span>Carteira</span></a></li>
+                    <li><a href="#"><i class="fas fa-question-circle"></i><span>Ajuda</span></a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i><span>Configurações</span></a></li>
+                </ul>
+            </nav>
+        </aside>
 
-    <div class="main-container">
-        <div id="home-view">
-            <header>
-                <h1>Bem-vindo ao Desafio de Conhecimentos</h1>
-                <p>Teste as suas habilidades com os nossos exercícios interativos. Quando estiver pronto, clique no botão abaixo para começar.</p>
+        <main class="main-content">
+            <header class="main-header">
+                <div class="header-left">
+                    <h1>Dashboard</h1>
+                    <p>Today's data</p>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search">
+                    </div>
+                    <div class="user-profile">
+                        <img src="https://via.placeholder.com/40" alt="User Avatar">
+                    </div>
+                </div>
             </header>
-            <button id="start-button">Iniciar Teste!</button>
-        </div>
 
-        <div id="quiz-container" class="hidden">
-            <h2 id="question-text">A carregar pergunta...</h2>
-            
-            <div id="fill-in-blank-container">
-                <input type="text" id="user-answer" placeholder="Escreva a sua resposta">
-                <button id="submit-button">Verificar</button>
-            </div>
+            <section class="data-cards">
+                <div class="card red">
+                    <div class="card-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="card-info">
+                        <h3>Payment amount</h3>
+                        <p>$500.00</p>
+                        <span class="card-number">**** 3484</span>
+                    </div>
+                </div>
+                <div class="card magenta">
+                    <div class="card-icon"><i class="fas fa-receipt"></i></div>
+                    <div class="card-info">
+                        <h3>Payment order</h3>
+                        <p>$200.00</p>
+                        <span class="card-number">**** 5542</span>
+                    </div>
+                </div>
+                <div class="card green">
+                    <div class="card-icon"><i class="fas fa-users"></i></div>
+                    <div class="card-info">
+                        <h3>Payment customer</h3>
+                        <p>$350.00</p>
+                        <span class="card-number">**** 8896</span>
+                    </div>
+                </div>
+                <div class="card blue">
+                    <div class="card-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="card-info">
+                        <h3>Payment proceed</h3>
+                        <p>$150.00</p>
+                        <span class="card-number">**** 7745</span>
+                    </div>
+                </div>
+            </section>
 
-            <div id="multiple-choice-container"></div>
-
-            <div id="construct-sentence-container">
-                <div id="sentence-area"></div>
-                <div id="word-bank"></div>
-                <button id="check-sentence-button">Verificar</button>
-                <button id="reset-sentence-button">Limpar</button>
-            </div>
-
-            <p id="feedback"></p>
-        </div>
+            <section class="finance-data">
+                <h2>Finance data</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Transaction Type</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2023-05-01</td>
+                            <td>Expenses</td>
+                            <td>Office Supplies</td>
+                            <td>$250</td>
+                            <td>Office Expenses</td>
+                            <td><span class="status pending">Pending</span></td>
+                            <td><a href="#" class="action-link">Edit</a></td>
+                        </tr>
+                        <tr>
+                            <td>2023-05-02</td>
+                            <td>Income</td>
+                            <td>Client Payment</td>
+                            <td>$500</td>
+                            <td>Sales</td>
+                            <td><span class="status completed">Completed</span></td>
+                            <td><a href="#" class="action-link">Edit</a></td>
+                        </tr>
+                        <tr>
+                            <td>2023-05-03</td>
+                            <td>Expense</td>
+                            <td>Travel Expenses</td>
+                            <td>$100</td>
+                            <td>Travel</td>
+                            <td><span class="status approved">Approved</span></td>
+                            <td><a href="#" class="action-link">Edit</a></td>
+                        </tr>
+                        <tr>
+                            <td>2023-05-04</td>
+                            <td>Expense</td>
+                            <td>Marketing Campaign</td>
+                            <td>$150</td>
+                            <td>Marketing</td>
+                            <td><span class="status pending">Pending</span></td>
+                            <td><a href="#" class="action-link">Edit</a></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td colspan="3">Total:</td>
+                            <td>$1000</td>
+                            <td colspan="3"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
     </div>
-
-    <script src="client.js" defer></script>
-
 </body>
 </html>
