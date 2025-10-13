@@ -1,5 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Referências aos elementos HTML
+    // Referências às novas "vistas" e ao botão de início
+    const homeView = document.getElementById('home-view');
+    const quizContainer = document.getElementById('quiz-container');
+    const startButton = document.getElementById('start-button');
+
+    // Referências aos elementos do quiz (como antes)
     const questionTextElement = document.getElementById('question-text');
     const fillInBlankContainer = document.getElementById('fill-in-blank-container');
     const userAnswerElement = document.getElementById('user-answer');
@@ -14,7 +19,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentQuestion = null;
 
+    // NOVO: Adicionar um evento ao botão "Iniciar Teste"
+    startButton.addEventListener('click', () => {
+        homeView.classList.add('hidden'); // Esconde a home page
+        quizContainer.classList.remove('hidden'); // Mostra o quiz
+        getNewQuestion(); // Busca a primeira pergunta
+    });
+
+    // Todo o resto do código do quiz permanece o mesmo...
+
     async function getNewQuestion() {
+        // ... (código igual ao anterior)
         try {
             const response = await fetch('/api/question');
             currentQuestion = await response.json();
@@ -26,16 +41,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displayQuestion() {
+        // ... (código igual ao anterior)
         questionTextElement.textContent = currentQuestion.text;
         feedbackElement.textContent = '';
         userAnswerElement.value = '';
         
-        // Esconder todos os contentores primeiro
         fillInBlankContainer.style.display = 'none';
         multipleChoiceContainer.style.display = 'none';
         constructSentenceContainer.style.display = 'none';
         
-        // Limpar contentores antigos
         multipleChoiceContainer.innerHTML = '';
         sentenceArea.innerHTML = '';
         wordBank.innerHTML = '';
@@ -57,9 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 button.textContent = word;
                 button.addEventListener('click', () => {
                     const wordSpan = document.createElement('span');
-                    wordSpan.textContent = word;
+                    wordSpan.textContent = word + ' ';
                     sentenceArea.appendChild(wordSpan);
-                    button.disabled = true; // Desativar botão depois de clicado
+                    button.disabled = true;
                 });
                 wordBank.appendChild(button);
             });
@@ -67,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function checkAnswer(userAnswer) {
+        // ... (código igual ao anterior)
         const cleanedCorrectAnswer = currentQuestion.answer.trim().toLowerCase();
         const cleanedUserAnswer = userAnswer.trim().toLowerCase();
 
@@ -83,15 +98,15 @@ document.addEventListener('DOMContentLoaded', () => {
     submitButton.addEventListener('click', () => checkAnswer(userAnswerElement.value));
     
     checkSentenceButton.addEventListener('click', () => {
-        const words = Array.from(sentenceArea.children).map(span => span.textContent);
+        const words = Array.from(sentenceArea.children).map(span => span.textContent.trim());
         const constructedSentence = words.join(' ');
         checkAnswer(constructedSentence);
     });
 
     resetSentenceButton.addEventListener('click', () => {
-        sentenceArea.innerHTML = ''; // Limpar a frase construída
-        Array.from(wordBank.children).forEach(button => button.disabled = false); // Reativar todos os botões
+        sentenceArea.innerHTML = '';
+        Array.from(wordBank.children).forEach(button => button.disabled = false);
     });
 
-    getNewQuestion();
+    // REMOVEMOS a chamada a getNewQuestion() daqui, porque agora ela é chamada quando se clica no botão "Iniciar"
 });
