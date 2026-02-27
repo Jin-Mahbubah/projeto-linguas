@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extrator Inteligente de Contatos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #25D366;
+            --primary-dark: #128C7E;
+            --bg-grad-1: #ece5dd;
+            --bg-grad-2: #dcf8c6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --input-bg: #fcfcfc;
+            --input-border: #e8e8e8;
+        }
+
+        /* Variáveis do Modo Escuro */
+        body.dark-mode {
+            --bg-grad-1: #1a1a2e;
+            --bg-grad-2: #16213e;
+            --card-bg: #242424;
+            --text-main: #f5f5f5;
+            --text-muted: #aaaaaa;
+            --input-bg: #2d2d2d;
+            --input-border: #404040;
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(135deg, var(--bg-grad-1) 0%, var(--bg-grad-2) 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            color: var(--text-main);
+            transition: background 0.4s ease;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 800px;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            animation: slideUp 0.6s ease-out;
+            position: relative;
+            transition: background-color 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        h2 { 
+            color: var(--primary-dark); 
+            margin-top: 0; 
+            font-size: 32px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        #theme-toggle {
+            position: absolute;
+            right: 0;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: none;
+            width: auto;
+            padding: 5px;
+            margin: 0;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 35px;
+            font-size: 15px;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group { margin-bottom: 10px; }
+        .form-group.full-width { grid-column: span 2; }
+
+        label {
+            display: block;
+            color: var(--primary-dark);
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input[type="text"], textarea { 
+            width: 100%; 
+            padding: 16px; 
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: var(--input-bg);
+            color: var(--text-main);
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(37, 211, 102, 0.1);
+        }
+
+        textarea { height: 160px; resize: none; }
+
+        .button-group {
+            grid-column: span 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        button.btn-action { 
+            padding: 16px 20px; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            font-size: 15px; 
+            font-weight: 600;
+            border-radius: 12px; 
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-csv {
+            background: linear-gradient(135deg, #34b7f1, #2980b9);
+            box-shadow: 0 6px 15px rgba(52, 183, 241, 0.3);
+        }
+
+        .btn-vcf {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            box-shadow: 0 6px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        button.btn-action:hover { transform: translateY(-3px); }
+        button.btn-action:active { transform: translateY(0); }
+
+        #toast {
+            visibility: hidden;
+            min-width: 300px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 10px;
+            padding: 16px 20px;
+            position: fixed;
+            z-index: 1000;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            font-size: 15px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        #toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
+        #toast.success { background-color: var(--primary-dark); }
+        #toast.error { background-color: #e74c3c; }
+
+        @media (max-width: 650px) {
+            .grid-layout, .button-group { grid-template-columns: 1fr; }
+            .form-group.full-width { grid-column: span 1; }
+            .container { padding: 25px; }
+            #theme-toggle { position: relative; display: block; margin: 0 auto 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-top">
+            <h2>Extrator de Contatos</h2>
+            <button id="theme-toggle" onclick="toggleTheme()" title="Mudar tema">🌙</button>
+        </div>
+        <p class="subtitle">Limpeza automática e bloqueio de números duplicados ativados.</p>
+        
+        <div class="grid-layout">
+            <div class="form-group full-width">
+                <label for="nome_grupo">🏷️ Nome do Grupo ou Prefixo</label>
+                <input type="text" id="nome_grupo" placeholder="Ex: Novos Muçulmanos">
+            </div>
+
+            <div class="form-group">
+                <label for="numeros_masc">👨 Textos dos Homens</label>
+                <textarea id="numeros_masc" placeholder="Cole as fichas dos homens aqui..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="numeros_fem">👩 Textos das Mulheres</label>
+                <textarea id="numeros_fem" placeholder="Cole as fichas das mulheres aqui..."></textarea>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn-action btn-csv" onclick="processarContatos('csv')">📊 Baixar Planilha (CSV)</button>
+                <button class="btn-action btn-vcf" onclick="processarContatos('vcf')">📇 Baixar Agenda (VCF)</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        // MEMÓRIA INTELIGENTE: Carrega o último nome digitado
+        document.addEventListener("DOMContentLoaded", () => {
+            const inputNome = document.getElementById('nome_grupo');
+            inputNome.value = localStorage.getItem('memoria_nome_grupo') || '';
+            inputNome.addEventListener('input', (e) => localStorage.setItem('memoria_nome_grupo', e.target.value));
+            
+            // Carrega preferência de tema
+            if(localStorage.getItem('tema_escuro') === 'sim') toggleTheme();
+        });
+
+        // MODO ESCURO
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById("theme-toggle");
+            body.classList.toggle("dark-mode");
+            
+            if (body.classList.contains("dark-mode")) {
+                btn.textContent = "☀️";
+                localStorage.setItem('tema_escuro', 'sim');
+            } else {
+                btn.textContent = "🌙";
+                localStorage.setItem('tema_escuro', 'nao');
+            }
+        }
+
+        // NOTIFICAÇÃO
+        function mostrarNotificacao(mensagem, tipo) {
+            const toast = document.getElementById("toast");
+            toast.textContent = mensagem;
+            toast.className = `show ${tipo}`;
+            setTimeout(() => { toast.className = toast.className.replace(`show ${tipo}`, ""); }, 4000);
+        }
+
+        // EXTRAÇÃO INTELIGENTE (Mantém o + de países diferentes e tira duplicados)
+        function extrairTelefonesDeTexto(texto) {
+            const regex = /\+?[\d][\d\s\-\(\)]{7,20}\d/g;
+            const encontrados = texto.match(regex) || [];
+            
+            // Limpa espaços e parênteses, mas preserva o sinal de +
+            const numerosLimpos = encontrados.map(n => {
+                let sinal = n.startsWith('+') ? '+' : '';
+                let apenasNumeros = n.replace(/\D/g, '');
+                return sinal + apenasNumeros;
+            });
+
+            // Remove os menores que 8 dígitos e APAGA DUPLICADOS
+            const filtrados = numerosLimpos.filter(n => n.length >= 8);
+            return [...new Set(filtrados)]; // O "Set" é a mágica que apaga cópias repetidas
+        }
+
+        // GERENCIADOR CENTRAL
+        function processarContatos(tipoExportacao) {
+            let nomeGrupo = document.getElementById('nome_grupo').value.trim() || "Contato"; 
+            const textoMasc = document.getElementById('numeros_masc').value;
+            const textoFem = document.getElementById('numeros_fem').value;
+            
+            const telMasc = extrairTelefonesDeTexto(textoMasc);
+            const telFem = extrairTelefonesDeTexto(textoFem);
+
+            if (telMasc.length === 0 && telFem.length === 0) {
+                mostrarNotificacao('⚠️ Nenhum número válido encontrado.', 'error');
+                return;
+            }
+
+            if (tipoExportacao === 'csv') gerarCSV(telMasc, telFem, nomeGrupo);
+            else gerarVCF(telMasc, telFem, nomeGrupo);
+
+            mostrarNotificacao(`✅ Sucesso! ${telMasc.length} homens e ${telFem.length} mulheres processados sem duplicatas.`, 'success');
+        }
+
+        // GERA PLANILHA (Google Contatos)
+        function gerarCSV(telMasc, telFem, nomeGrupo) {
+            let conteudo = "Name,Phone 1 - Value\n";
+            telMasc.forEach((num, i) => conteudo += `${nomeGrupo} - Masc ${i + 1},${num}\n`);
+            telFem.forEach((num, i) => conteudo += `${nomeGrupo} - Fem ${i + 1},${num}\n`);
+            baixarArquivo(conteudo, `${nomeGrupo}_planilha.csv`, 'text/csv');
+        }
+
+        // GERA VCF (Direto para Celular)
+        function gerarVCF(telMasc, telFem, nomeGrupo) {
+            let conteudo = "";
+            telMasc.forEach((num, i) => {
+                conteudo += `BEGIN:VCARD\nVERSION:3.0\nFN:${nomeGrupo} - Masc ${i + 1}\nTEL;TYPE=CELL:${num}\nEND:VCARD\n`;
+            });
+            telFem.forEach((num, i) => {
+                conteudo += `BEGIN:VCARD\nVERSION:3.0\nFN:${nomeGrupo} - Fem ${i + 1}\nTEL;TYPE=CELL:${num}\nEND:VCARD\n`;
+            });
+            baixarArquivo(conteudo, `${nomeGrupo}_agenda.vcf`, 'text/vcard');
+        }
+
+        // FUNÇÃO DE DOWNLOAD
+        function baixarArquivo(conteudo, nomeArquivo, tipoMime) {
+            const blob = new Blob([conteudo], { type: `${tipoMime};charset=utf-8;` });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = nomeArquivo;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
