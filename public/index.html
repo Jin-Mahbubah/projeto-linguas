@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Extrator Inteligente de Contatos</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -18,7 +18,6 @@
             --input-border: #e8e8e8;
         }
 
-        /* Variáveis do Modo Escuro */
         body.dark-mode {
             --bg-grad-1: #1a1a2e;
             --bg-grad-2: #16213e;
@@ -65,14 +64,16 @@
             justify-content: center;
             align-items: center;
             position: relative;
+            margin-bottom: 5px;
         }
 
         h2 { 
             color: var(--primary-dark); 
-            margin-top: 0; 
+            margin: 0; 
             font-size: 32px;
             font-weight: 600;
             letter-spacing: -0.5px;
+            text-align: center;
         }
 
         #theme-toggle {
@@ -86,13 +87,17 @@
             width: auto;
             padding: 5px;
             margin: 0;
+            transition: transform 0.2s;
         }
+        
+        #theme-toggle:hover { transform: scale(1.1); }
 
         p.subtitle {
             text-align: center;
             color: var(--text-muted);
-            margin-bottom: 35px;
+            margin-bottom: 30px;
             font-size: 15px;
+            line-height: 1.4;
         }
 
         .grid-layout {
@@ -151,6 +156,10 @@
             border-radius: 12px; 
             width: 100%;
             transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-csv {
@@ -166,9 +175,24 @@
         button.btn-action:hover { transform: translateY(-3px); }
         button.btn-action:active { transform: translateY(0); }
 
+        .credit-footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 13px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--input-border);
+            padding-top: 15px;
+        }
+
+        .credit-footer strong {
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
         #toast {
             visibility: hidden;
-            min-width: 300px;
+            min-width: 280px;
+            max-width: 90%;
             background-color: #333;
             color: #fff;
             text-align: center;
@@ -179,22 +203,52 @@
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%) translateY(20px);
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 500;
             opacity: 0;
             transition: opacity 0.3s, transform 0.3s;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-sizing: border-box;
         }
 
         #toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
         #toast.success { background-color: var(--primary-dark); }
         #toast.error { background-color: #e74c3c; }
 
-        @media (max-width: 650px) {
-            .grid-layout, .button-group { grid-template-columns: 1fr; }
+        /* ========================================================= */
+        /* RESPONSIVIDADE: CELULARES E TABLETS                       */
+        /* ========================================================= */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .container { 
+                padding: 25px 20px; 
+                border-radius: 20px; 
+            }
+            .grid-layout, .button-group { 
+                grid-template-columns: 1fr; 
+                gap: 15px;
+            }
             .form-group.full-width { grid-column: span 1; }
-            .container { padding: 25px; }
-            #theme-toggle { position: relative; display: block; margin: 0 auto 10px; }
+            
+            .header-top { 
+                flex-direction: column; 
+                margin-bottom: 15px;
+            }
+            h2 { font-size: 26px; }
+            p.subtitle { font-size: 13.5px; margin-bottom: 25px; }
+            
+            #theme-toggle { 
+                position: relative; 
+                margin-top: 10px; 
+                font-size: 22px;
+            }
+
+            textarea { height: 120px; } /* Altura menor no celular para caber na tela */
+            
+            button.btn-action { 
+                padding: 18px 15px; /* Botões mais altos para facilitar o clique com o dedo */
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -228,22 +282,23 @@
                 <button class="btn-action btn-vcf" onclick="processarContatos('vcf')">📇 Baixar Agenda (VCF)</button>
             </div>
         </div>
+
+        <div class="credit-footer">
+            Este software foi criado por: <strong>Beirenesse</strong>
+        </div>
     </div>
 
     <div id="toast"></div>
 
     <script>
-        // MEMÓRIA INTELIGENTE: Carrega o último nome digitado
         document.addEventListener("DOMContentLoaded", () => {
             const inputNome = document.getElementById('nome_grupo');
             inputNome.value = localStorage.getItem('memoria_nome_grupo') || '';
             inputNome.addEventListener('input', (e) => localStorage.setItem('memoria_nome_grupo', e.target.value));
             
-            // Carrega preferência de tema
             if(localStorage.getItem('tema_escuro') === 'sim') toggleTheme();
         });
 
-        // MODO ESCURO
         function toggleTheme() {
             const body = document.body;
             const btn = document.getElementById("theme-toggle");
@@ -258,7 +313,6 @@
             }
         }
 
-        // NOTIFICAÇÃO
         function mostrarNotificacao(mensagem, tipo) {
             const toast = document.getElementById("toast");
             toast.textContent = mensagem;
@@ -266,24 +320,20 @@
             setTimeout(() => { toast.className = toast.className.replace(`show ${tipo}`, ""); }, 4000);
         }
 
-        // EXTRAÇÃO INTELIGENTE (Mantém o + de países diferentes e tira duplicados)
         function extrairTelefonesDeTexto(texto) {
             const regex = /\+?[\d][\d\s\-\(\)]{7,20}\d/g;
             const encontrados = texto.match(regex) || [];
             
-            // Limpa espaços e parênteses, mas preserva o sinal de +
             const numerosLimpos = encontrados.map(n => {
                 let sinal = n.startsWith('+') ? '+' : '';
                 let apenasNumeros = n.replace(/\D/g, '');
                 return sinal + apenasNumeros;
             });
 
-            // Remove os menores que 8 dígitos e APAGA DUPLICADOS
             const filtrados = numerosLimpos.filter(n => n.length >= 8);
-            return [...new Set(filtrados)]; // O "Set" é a mágica que apaga cópias repetidas
+            return [...new Set(filtrados)];
         }
 
-        // GERENCIADOR CENTRAL
         function processarContatos(tipoExportacao) {
             let nomeGrupo = document.getElementById('nome_grupo').value.trim() || "Contato"; 
             const textoMasc = document.getElementById('numeros_masc').value;
@@ -303,7 +353,6 @@
             mostrarNotificacao(`✅ Sucesso! ${telMasc.length} homens e ${telFem.length} mulheres processados sem duplicatas.`, 'success');
         }
 
-        // GERA PLANILHA (Google Contatos)
         function gerarCSV(telMasc, telFem, nomeGrupo) {
             let conteudo = "Name,Phone 1 - Value\n";
             telMasc.forEach((num, i) => conteudo += `${nomeGrupo} - Masc ${i + 1},${num}\n`);
@@ -311,7 +360,6 @@
             baixarArquivo(conteudo, `${nomeGrupo}_planilha.csv`, 'text/csv');
         }
 
-        // GERA VCF (Direto para Celular)
         function gerarVCF(telMasc, telFem, nomeGrupo) {
             let conteudo = "";
             telMasc.forEach((num, i) => {
@@ -323,7 +371,6 @@
             baixarArquivo(conteudo, `${nomeGrupo}_agenda.vcf`, 'text/vcard');
         }
 
-        // FUNÇÃO DE DOWNLOAD
         function baixarArquivo(conteudo, nomeArquivo, tipoMime) {
             const blob = new Blob([conteudo], { type: `${tipoMime};charset=utf-8;` });
             const link = document.createElement("a");
