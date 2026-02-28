@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-PT" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -9,10 +9,17 @@
     <meta name="theme-color" content="#128C7E">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3616/3616215.png">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
     <style>
+        /* REINÍCIO GLOBAL PARA GARANTIR COMPATIBILIDADE EM QUALQUER ECRÃ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         :root {
             --primary: #25D366;
             --primary-dark: #128C7E;
@@ -41,15 +48,16 @@
             font-family: 'Poppins', sans-serif; 
             background: linear-gradient(135deg, var(--bg-grad-1) 0%, var(--bg-grad-2) 100%);
             min-height: 100vh;
-            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            box-sizing: border-box;
             color: var(--text-main);
             transition: background 0.5s ease;
         }
+
+        html[dir="rtl"] body { font-family: 'Tajawal', 'Poppins', sans-serif; }
+        html[dir="rtl"] .badge { margin-left: 0; margin-right: 8px; }
 
         .container {
             background-color: var(--card-bg);
@@ -70,16 +78,31 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .header-top { display: flex; justify-content: center; align-items: center; position: relative; margin-bottom: 5px; }
-        h2 { color: var(--primary-dark); margin: 0; font-size: 32px; font-weight: 600; text-align: center; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        h2 { color: var(--primary-dark); font-size: 28px; font-weight: 600; text-align: left; flex-grow: 1; margin: 0;}
+        html[dir="rtl"] h2 { text-align: right; }
 
-        #theme-toggle { position: absolute; right: 0; background: none; border: none; font-size: 26px; cursor: pointer; padding: 5px; margin: 0; color: var(--text-main); transition: transform 0.2s; }
+        #lang-selector {
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--input-border);
+            background-color: var(--input-bg);
+            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        #theme-toggle { background: none; border: none; font-size: 26px; cursor: pointer; padding: 5px; color: var(--text-main); transition: transform 0.2s; }
         #theme-toggle:hover { transform: scale(1.15); color: var(--primary); }
 
-        p.subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; font-size: 15px; line-height: 1.4; }
+        p.subtitle { text-align: left; color: var(--text-muted); margin-bottom: 30px; font-size: 15px; line-height: 1.4; }
+        html[dir="rtl"] p.subtitle { text-align: right; }
 
         .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .form-group { margin-bottom: 5px; }
+        .form-group { margin-bottom: 5px; width: 100%; }
         .full-width { grid-column: span 2; }
         
         .filtro-destaque input {
@@ -89,7 +112,9 @@
         }
 
         .badge {
-            display: inline-block;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
             background-color: var(--primary);
             color: #fff;
             padding: 2px 8px;
@@ -97,7 +122,6 @@
             font-size: 12px;
             font-weight: 600;
             margin-left: 8px;
-            vertical-align: middle;
             transition: background-color 0.3s;
         }
         .badge.zero { background-color: var(--text-muted); opacity: 0.5; } 
@@ -110,16 +134,15 @@
         .badge.pop { animation: popPulse 0.4s ease-out; }
 
         label { display: flex; align-items: center; color: var(--primary-dark); font-weight: 500; margin-bottom: 8px; font-size: 14px; gap: 6px;}
-        label i { font-size: 18px; }
+        label i { font-size: 18px; flex-shrink: 0; }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--input-bg); border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: var(--primary-dark); border-radius: 10px; border: 2px solid var(--input-bg); }
-        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
         input[type="text"], textarea { 
             width: 100%; padding: 16px; border: 2px solid var(--input-border); border-radius: 12px;
-            box-sizing: border-box; font-family: 'Poppins', sans-serif; font-size: 14px;
+            font-family: inherit; font-size: 14px;
             background-color: var(--input-bg); color: var(--text-main); transition: all 0.3s ease;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
@@ -131,65 +154,76 @@
 
         .button-group-magic {
             grid-column: span 2; display: grid; grid-template-columns: 2fr 1fr; gap: 15px;
-            margin-top: 5px; margin-bottom: 15px;
+            margin-top: 5px; margin-bottom: 15px; width: 100%;
         }
 
-        .button-group { grid-column: span 2; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .button-group { grid-column: span 2; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; width: 100%; }
 
         button.btn-action { 
-            padding: 16px 20px; color: white; border: none; cursor: pointer; font-size: 15px; 
+            padding: 16px 20px; color: white; border: none; cursor: pointer; font-size: 14px; 
             font-weight: 600; border-radius: 12px; width: 100%; transition: all 0.3s ease;
-            display: flex; justify-content: center; align-items: center; gap: 8px;
+            display: flex; justify-content: center; align-items: center; gap: 8px; font-family: inherit;
+            text-align: center;
         }
-        button.btn-action i { font-size: 20px; }
         
         .btn-magic { background: linear-gradient(135deg, #8e44ad, #9b59b6); box-shadow: 0 6px 15px rgba(142, 68, 173, 0.3); }
-        .btn-magic:hover { box-shadow: 0 10px 25px rgba(142, 68, 173, 0.6); filter: brightness(1.1); }
-        
         .btn-clear { background: linear-gradient(135deg, #e74c3c, #c0392b); box-shadow: 0 6px 15px rgba(231, 76, 60, 0.3); } 
-        .btn-clear:hover { box-shadow: 0 10px 25px rgba(231, 76, 60, 0.6); filter: brightness(1.1); }
-        
         .btn-csv { background: linear-gradient(135deg, #34b7f1, #2980b9); box-shadow: 0 6px 15px rgba(52, 183, 241, 0.3); }
-        .btn-csv:hover { box-shadow: 0 10px 25px rgba(52, 183, 241, 0.6); filter: brightness(1.1); }
-        
         .btn-vcf { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); box-shadow: 0 6px 15px rgba(37, 211, 102, 0.3); }
-        .btn-vcf:hover { box-shadow: 0 10px 25px rgba(37, 211, 102, 0.6); filter: brightness(1.1); }
         
         button.btn-action:active { transform: translateY(2px); }
 
-        .credit-footer { 
-            text-align: center; 
-            margin-top: 35px; 
-            font-size: 14px; 
-            color: var(--text-muted); 
-            border-top: 1px solid var(--input-border); 
-            padding-top: 20px; 
-            line-height: 1.6;
-        }
-        .credit-footer strong { 
-            color: var(--primary-dark); 
-            font-weight: 600; 
-            font-size: 15px;
-        }
-        .credit-footer .data-criacao {
-            display: block;
-            font-size: 12px;
-            opacity: 0.7;
-            margin-top: 4px;
-        }
+        .credit-footer { text-align: center; margin-top: 35px; font-size: 14px; color: var(--text-muted); border-top: 1px solid var(--input-border); padding-top: 20px; line-height: 1.6; }
+        .credit-footer strong { color: var(--primary-dark); font-weight: 600; font-size: 15px; }
+        .credit-footer .data-criacao { display: block; font-size: 12px; opacity: 0.7; margin-top: 4px; }
 
         #toast { visibility: hidden; min-width: 280px; max-width: 90%; background-color: #333; color: #fff; text-align: center; border-radius: 12px; padding: 16px 20px; position: fixed; z-index: 1000; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); font-size: 14px; opacity: 0; transition: opacity 0.3s, transform 0.3s; backdrop-filter: blur(10px); }
         #toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
         #toast.success { background-color: rgba(18, 140, 126, 0.95); }
         #toast.error { background-color: rgba(231, 76, 60, 0.95); }
 
+        /* ========================================================== */
+        /* OTIMIZAÇÃO EXTREMA PARA QUALQUER ECRÃ (Responsividade Total)*/
+        /* ========================================================== */
         @media (max-width: 768px) {
-            .container { padding: 25px 20px; }
-            .grid-layout, .button-group, .button-group-magic { grid-template-columns: 1fr; gap: 15px; }
+            body { padding: 10px 5px; } 
+            
+            .container { 
+                padding: 25px 15px; 
+                border-radius: 20px; 
+            }
+            
+            h2 { font-size: 24px; text-align: center; width: 100%; margin-bottom: 5px; }
+            html[dir="rtl"] h2 { text-align: center; }
+            
+            .header-top { flex-direction: column; gap: 15px; justify-content: center; }
+            
+            .header-controls { width: 100%; justify-content: center; }
+            
+            p.subtitle { text-align: center; font-size: 14px; margin-bottom: 20px; }
+            html[dir="rtl"] p.subtitle { text-align: center; }
+
+            .grid-layout, .button-group, .button-group-magic { grid-template-columns: 1fr; gap: 12px; }
             .full-width { grid-column: span 1; }
-            .header-top { flex-direction: column; }
-            #theme-toggle { position: relative; margin-top: 10px; }
-            textarea { height: 120px; }
+            
+            textarea { height: 110px; }
+            #texto_geral { height: 130px; }
+
+            /* TAMANHO 16PX OBRIGATÓRIO PARA EVITAR ZOOM NO IPHONE/ANDROID */
+            input[type="text"], textarea, #lang-selector { 
+                font-size: 16px; 
+                padding: 14px;
+            }
+            
+            button.btn-action { padding: 15px; font-size: 15px; }
+        }
+
+        /* Ajuste extra para ecrãs muito minúsculos (ex: iPhone SE antigo) */
+        @media (max-width: 360px) {
+            h2 { font-size: 20px; }
+            .container { padding: 20px 10px; }
+            button.btn-action { font-size: 13px; padding: 12px; }
+            label { font-size: 13px; }
         }
     </style>
 </head>
@@ -197,67 +231,169 @@
 
     <div class="container">
         <div class="header-top">
-            <h2>Extrator de Contatos</h2>
-            <button id="theme-toggle" onclick="toggleTheme()" title="Mudar tema"><i class="ph-fill ph-moon"></i></button>
+            <h2 data-i18n="title">Extrator de Contatos</h2>
+            <div class="header-controls">
+                <select id="lang-selector" onchange="changeLanguage(this.value)">
+                    <option value="pt">🇵🇹 PT</option>
+                    <option value="en">🇬🇧 EN</option>
+                    <option value="fr">🇫🇷 FR</option>
+                    <option value="ar">🇸🇦 AR</option>
+                </select>
+                <button id="theme-toggle" onclick="toggleTheme()" title="Mudar tema"><i class="ph-fill ph-moon"></i></button>
+            </div>
         </div>
-        <p class="subtitle">Cole o chat inteiro. O sistema separa e organiza para você com perfeição!</p>
+        <p class="subtitle" data-i18n="subtitle">Cole o chat inteiro. O sistema separa e organiza para você com perfeição!</p>
         
         <div class="grid-layout">
             <div class="form-group">
-                <label for="nome_grupo"><i class="ph-fill ph-users-three"></i> Nome do Grupo</label>
-                <input type="text" id="nome_grupo" placeholder="Ex: Novos Muçulmanos">
+                <label for="nome_grupo"><i class="ph-fill ph-users-three"></i> <span data-i18n="lbl_group">Nome do Grupo</span></label>
+                <input type="text" id="nome_grupo" data-i18n-ph="ph_group" placeholder="Ex: Novos Muçulmanos">
             </div>
 
             <div class="form-group filtro-destaque">
-                <label for="codigo_dae"><i class="ph-fill ph-key"></i> Seu Código (Filtro)</label>
+                <label for="codigo_dae"><i class="ph-fill ph-key"></i> <span data-i18n="lbl_code">Seu Código (Filtro)</span></label>
                 <input type="text" id="codigo_dae" value="Por-2">
             </div>
 
             <div class="form-group full-width">
                 <label for="texto_geral">
-                    <i class="ph-fill ph-clipboard-text"></i> 1. Cole TUDO misturado aqui dentro: 
+                    <i class="ph-fill ph-clipboard-text"></i> <span data-i18n="lbl_paste">1. Cole TUDO misturado aqui:</span> 
                     <span id="count_total" class="badge zero">0</span>
                 </label>
-                <textarea id="texto_geral" placeholder="Cole o chat inteiro do WhatsApp aqui..."></textarea>
+                <textarea id="texto_geral" data-i18n-ph="ph_paste" placeholder="Cole o chat inteiro do WhatsApp aqui..."></textarea>
             </div>
 
             <div class="button-group-magic">
-                <button class="btn-action btn-magic" onclick="separarContatos()"><i class="ph-fill ph-magic-wand"></i> 2. Filtrar e Separar</button>
-                <button class="btn-action btn-clear" onclick="limparTudo()"><i class="ph-fill ph-trash"></i> Limpar</button>
+                <button class="btn-action btn-magic" onclick="separarContatos()"><i class="ph-fill ph-magic-wand"></i> <span data-i18n="btn_filter">2. Filtrar e Separar</span></button>
+                <button class="btn-action btn-clear" onclick="limparTudo()"><i class="ph-fill ph-trash"></i> <span data-i18n="btn_clear">Limpar</span></button>
             </div>
 
             <div class="form-group">
                 <label for="res_masc">
-                    <i class="ph-fill ph-gender-male"></i> Homens Encontrados 
+                    <i class="ph-fill ph-gender-male"></i> <span data-i18n="lbl_men">Homens Encontrados</span> 
                     <span id="count_masc" class="badge zero">0</span>
                 </label>
-                <textarea id="res_masc" placeholder="Os números vão aparecer aqui automaticamente..."></textarea>
+                <textarea id="res_masc" data-i18n-ph="ph_result" placeholder="Os números vão aparecer aqui automaticamente..."></textarea>
             </div>
             
             <div class="form-group">
                 <label for="res_fem">
-                    <i class="ph-fill ph-gender-female"></i> Mulheres Encontradas 
+                    <i class="ph-fill ph-gender-female"></i> <span data-i18n="lbl_women">Mulheres Encontradas</span> 
                     <span id="count_fem" class="badge zero">0</span>
                 </label>
-                <textarea id="res_fem" placeholder="Os números vão aparecer aqui automaticamente..."></textarea>
+                <textarea id="res_fem" data-i18n-ph="ph_result" placeholder="Os números vão aparecer aqui automaticamente..."></textarea>
             </div>
             
             <div class="button-group">
-                <button class="btn-action btn-csv" onclick="processarExportacao('csv')"><i class="ph-fill ph-file-csv"></i> 3. Baixar Planilha</button>
-                <button class="btn-action btn-vcf" onclick="processarExportacao('vcf')"><i class="ph-fill ph-address-book"></i> 3. Baixar Agenda</button>
+                <button class="btn-action btn-csv" onclick="processarExportacao('csv')"><i class="ph-fill ph-file-csv"></i> <span data-i18n="btn_csv">3. Baixar Planilha</span></button>
+                <button class="btn-action btn-vcf" onclick="processarExportacao('vcf')"><i class="ph-fill ph-address-book"></i> <span data-i18n="btn_vcf">3. Baixar Agenda</span></button>
             </div>
         </div>
 
         <div class="credit-footer">
-            Desenvolvido com <i class="ph-fill ph-heart" style="color: #e74c3c;"></i> por <strong>Beirensse</strong>
-            <span class="data-criacao"><i class="ph-fill ph-calendar-blank"></i> Criado em: 28 de Fevereiro de 2026</span>
+            <span data-i18n="footer_dev">Desenvolvido com <i class="ph-fill ph-heart" style="color: #e74c3c;"></i> por <strong>Beirensse</strong></span>
+            <span class="data-criacao"><i class="ph-fill ph-calendar-blank"></i> <span data-i18n="footer_date">Criado em: 28 de Fevereiro de 2026</span></span>
         </div>
     </div>
 
     <div id="toast"></div>
 
     <script>
-        // REGISTO DA PWA (SERVICE WORKER)
+        const translations = {
+            pt: {
+                title: "Extrator de Contatos",
+                subtitle: "Cole o chat inteiro. O sistema separa e organiza para você com perfeição!",
+                lbl_group: "Nome do Grupo", ph_group: "Ex: Novos Muçulmanos",
+                lbl_code: "Seu Código (Filtro)",
+                lbl_paste: "1. Cole TUDO misturado aqui:", ph_paste: "Cole o chat inteiro do WhatsApp aqui...",
+                btn_filter: "2. Filtrar e Separar", btn_clear: "Limpar",
+                lbl_men: "Homens Encontrados", lbl_women: "Mulheres Encontradas",
+                ph_result: "Os números vão aparecer aqui automaticamente...",
+                btn_csv: "3. Baixar Planilha", btn_vcf: "3. Baixar Agenda",
+                footer_dev: "Desenvolvido com <i class='ph-fill ph-heart' style='color: #e74c3c;'></i> por <strong>Beirensse</strong>",
+                footer_date: "Criado em: 28 de Fevereiro de 2026",
+                msg_empty: "⚠️ Cole as mensagens no quadro misturado primeiro!",
+                msg_clean: "🧹 Tudo limpo! Pronto para a próxima lista.",
+                msg_org: "✅ Organizado: {m} Homens e {f} Mulheres encontrados!",
+                msg_err: "⚠️ Não há contatos. Clique em 'Filtrar e Separar' primeiro.",
+                msg_done: "✅ Download Concluído!"
+            },
+            en: {
+                title: "Contact Extractor",
+                subtitle: "Paste the entire chat. The system separates and organizes it perfectly for you!",
+                lbl_group: "Group Name", ph_group: "Ex: New Muslims",
+                lbl_code: "Your Code (Filter)",
+                lbl_paste: "1. Paste EVERYTHING mixed here:", ph_paste: "Paste the entire WhatsApp chat here...",
+                btn_filter: "2. Filter & Separate", btn_clear: "Clear",
+                lbl_men: "Men Found", lbl_women: "Women Found",
+                ph_result: "Numbers will appear here automatically...",
+                btn_csv: "3. Download CSV", btn_vcf: "3. Download Contacts",
+                footer_dev: "Developed with <i class='ph-fill ph-heart' style='color: #e74c3c;'></i> by <strong>Beirensse</strong>",
+                footer_date: "Created on: February 28, 2026",
+                msg_empty: "⚠️ Paste the mixed messages in the box first!",
+                msg_clean: "🧹 All clean! Ready for the next list.",
+                msg_org: "✅ Organized: {m} Men and {f} Women found!",
+                msg_err: "⚠️ No contacts found. Click 'Filter & Separate' first.",
+                msg_done: "✅ Download Complete!"
+            },
+            fr: {
+                title: "Extracteur de Contacts",
+                subtitle: "Collez tout le chat. Le système sépare et organise parfaitement pour vous !",
+                lbl_group: "Nom du Groupe", ph_group: "Ex : Nouveaux Musulmans",
+                lbl_code: "Votre Code (Filtre)",
+                lbl_paste: "1. Collez TOUT mélangé ici :", ph_paste: "Collez tout le chat WhatsApp ici...",
+                btn_filter: "2. Filtrer et Séparer", btn_clear: "Effacer",
+                lbl_men: "Hommes Trouvés", lbl_women: "Femmes Trouvées",
+                ph_result: "Les numéros apparaîtront ici automatiquement...",
+                btn_csv: "3. Télécharger CSV", btn_vcf: "3. Télécharger Contacts",
+                footer_dev: "Développé avec <i class='ph-fill ph-heart' style='color: #e74c3c;'></i> par <strong>Beirensse</strong>",
+                footer_date: "Créé le : 28 Février 2026",
+                msg_empty: "⚠️ Collez d'abord les messages mélangés dans la boîte !",
+                msg_clean: "🧹 Tout est propre ! Prêt pour la liste suivante.",
+                msg_org: "✅ Organisé : {m} Hommes et {f} Femmes trouvés !",
+                msg_err: "⚠️ Aucun contact. Cliquez d'abord sur 'Filtrer et Séparer'.",
+                msg_done: "✅ Téléchargement Terminé !"
+            },
+            ar: {
+                title: "مستخرج جهات الاتصال",
+                subtitle: "الصق الدردشة بالكامل. النظام يفصلها وينظمها لك بشكل مثالي!",
+                lbl_group: "اسم المجموعة", ph_group: "مثال: المسلمون الجدد",
+                lbl_code: "الكود الخاص بك (عامل التصفية)",
+                lbl_paste: "١. الصق كل شيء مختلط هنا:", ph_paste: "الصق دردشة واتساب بالكامل هنا...",
+                btn_filter: "٢. تصفية وفصل", btn_clear: "مسح",
+                lbl_men: "الرجال الموجودون", lbl_women: "النساء الموجودات",
+                ph_result: "ستظهر الأرقام هنا تلقائيًا...",
+                btn_csv: "٣. تحميل جدول (CSV)", btn_vcf: "٣. تحميل جهات الاتصال",
+                footer_dev: "تم التطوير بـ <i class='ph-fill ph-heart' style='color: #e74c3c;'></i> بواسطة <strong>Beirensse</strong>",
+                footer_date: "تم الإنشاء في: ٢٨ فبراير ٢٠٢٦",
+                msg_empty: "⚠️ الصق الرسائل المختلطة في المربع أولاً!",
+                msg_clean: "🧹 تم المسح! جاهز للقائمة التالية.",
+                msg_org: "✅ تم التنظيم: تم العثور على {m} رجال و {f} نساء!",
+                msg_err: "⚠️ لا توجد جهات اتصال. انقر على 'تصفية وفصل' أولاً.",
+                msg_done: "✅ اكتمل التحميل!"
+            }
+        };
+
+        let currentLang = 'pt';
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('memoria_idioma', lang);
+            
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = lang;
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(translations[lang][key]) el.innerHTML = translations[lang][key];
+            });
+
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if(translations[lang][key]) el.placeholder = translations[lang][key];
+            });
+        }
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
@@ -270,7 +406,12 @@
             const inputNomeGrupo = document.getElementById('nome_grupo');
             const inputCodigo = document.getElementById('codigo_dae');
             const textoGeral = document.getElementById('texto_geral');
+            const langSelector = document.getElementById('lang-selector');
             
+            const savedLang = localStorage.getItem('memoria_idioma') || 'pt';
+            langSelector.value = savedLang;
+            changeLanguage(savedLang);
+
             inputNomeGrupo.value = localStorage.getItem('memoria_nome_grupo') || '';
             if (localStorage.getItem('memoria_codigo')) {
                 inputCodigo.value = localStorage.getItem('memoria_codigo');
@@ -294,7 +435,6 @@
                 void badge.offsetWidth; 
                 badge.classList.add('pop');
             }
-            
             if (numero > 0) badge.classList.remove('zero');
             else badge.classList.add('zero');
         }
@@ -320,9 +460,14 @@
             }
         }
 
-        function mostrarNotificacao(mensagem, tipo) {
+        function mostrarNotificacao(mensagemKey, tipo, params = {}) {
+            let msg = translations[currentLang][mensagemKey] || mensagemKey;
+            
+            if(params.m !== undefined) msg = msg.replace('{m}', params.m);
+            if(params.f !== undefined) msg = msg.replace('{f}', params.f);
+
             const toast = document.getElementById("toast");
-            toast.textContent = mensagem;
+            toast.textContent = msg;
             toast.className = `show ${tipo}`;
             setTimeout(() => { toast.className = toast.className.replace(`show ${tipo}`, ""); }, 4000);
         }
@@ -337,7 +482,7 @@
             atualizarBadge('count_masc', 0);
             atualizarBadge('count_fem', 0);
 
-            mostrarNotificacao('🧹 Tudo limpo! Pronto para a próxima lista.', 'success');
+            mostrarNotificacao('msg_clean', 'success');
             textoGeral.focus();
         }
 
@@ -346,7 +491,7 @@
             const texto = document.getElementById('texto_geral').value;
 
             if (!texto.trim()) {
-                mostrarNotificacao('⚠️ Cole as mensagens no quadro misturado primeiro!', 'error');
+                mostrarNotificacao('msg_empty', 'error');
                 return;
             }
 
@@ -385,7 +530,7 @@
             atualizarBadge('count_masc', telefonesMasc.length);
             atualizarBadge('count_fem', telefonesFem.length);
 
-            mostrarNotificacao(`✅ Organizado: ${telefonesMasc.length} Homens e ${telefonesFem.length} Mulheres encontrados!`, 'success');
+            mostrarNotificacao('msg_org', 'success', {m: telefonesMasc.length, f: telefonesFem.length});
         }
 
         function pegarNumeros(id) {
@@ -399,14 +544,14 @@
             const telFem = pegarNumeros('res_fem');
 
             if (telMasc.length === 0 && telFem.length === 0) {
-                mostrarNotificacao('⚠️ Não há contatos. Clique em "Filtrar e Separar" primeiro.', 'error');
+                mostrarNotificacao('msg_err', 'error');
                 return;
             }
 
             if (tipoExportacao === 'csv') gerarCSV(telMasc, telFem, nomeGrupo);
             else gerarVCF(telMasc, telFem, nomeGrupo);
 
-            mostrarNotificacao(`✅ Download Concluído!`, 'success');
+            mostrarNotificacao('msg_done', 'success');
         }
 
         function gerarCSV(telMasc, telFem, nomeGrupo) {
