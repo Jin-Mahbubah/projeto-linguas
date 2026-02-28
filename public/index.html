@@ -51,7 +51,6 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
             animation: slideUp 0.6s ease-out;
             position: relative;
-            transition: background-color 0.4s ease;
         }
 
         @keyframes slideUp {
@@ -59,196 +58,65 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .header-top {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            margin-bottom: 5px;
-        }
+        .header-top { display: flex; justify-content: center; align-items: center; position: relative; margin-bottom: 5px; }
+        h2 { color: var(--primary-dark); margin: 0; font-size: 32px; font-weight: 600; text-align: center; }
 
-        h2 { 
-            color: var(--primary-dark); 
-            margin: 0; 
-            font-size: 32px;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            text-align: center;
-        }
-
-        #theme-toggle {
-            position: absolute;
-            right: 0;
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: none;
-            width: auto;
-            padding: 5px;
-            margin: 0;
-            transition: transform 0.2s;
-        }
-        
+        #theme-toggle { position: absolute; right: 0; background: none; border: none; font-size: 24px; cursor: pointer; padding: 5px; margin: 0; transition: transform 0.2s; }
         #theme-toggle:hover { transform: scale(1.1); }
 
-        p.subtitle {
-            text-align: center;
-            color: var(--text-muted);
-            margin-bottom: 30px;
-            font-size: 15px;
-            line-height: 1.4;
+        p.subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; font-size: 15px; line-height: 1.4; }
+
+        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { margin-bottom: 5px; }
+        .full-width { grid-column: span 2; }
+        
+        .filtro-destaque input {
+            border-color: #34b7f1;
+            background-color: rgba(52, 183, 241, 0.05);
+            font-weight: 600;
         }
 
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .form-group { margin-bottom: 10px; }
-        .form-group.full-width { grid-column: span 2; }
-
-        label {
-            display: block;
-            color: var(--primary-dark);
-            font-weight: 500;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
+        label { display: block; color: var(--primary-dark); font-weight: 500; margin-bottom: 8px; font-size: 14px; }
 
         input[type="text"], textarea { 
-            width: 100%; 
-            padding: 16px; 
-            border: 2px solid var(--input-border);
-            border-radius: 12px;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            background-color: var(--input-bg);
-            color: var(--text-main);
+            width: 100%; padding: 16px; border: 2px solid var(--input-border); border-radius: 12px;
+            box-sizing: border-box; font-family: 'Poppins', sans-serif; font-size: 14px;
+            background-color: var(--input-bg); color: var(--text-main); transition: all 0.3s ease;
         }
+        
+        input[type="text"]:focus, textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(37, 211, 102, 0.1); }
+        
+        textarea { height: 140px; resize: none; }
+        #texto_geral { height: 160px; border-color: #34b7f1; } /* Caixa principal destacada */
 
-        input[type="text"]:focus, textarea:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(37, 211, 102, 0.1);
-        }
-
-        textarea { height: 160px; resize: none; }
-
-        .button-group {
-            grid-column: span 2;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 10px;
-        }
+        .button-group { grid-column: span 2; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
 
         button.btn-action { 
-            padding: 16px 20px; 
-            color: white; 
-            border: none; 
-            cursor: pointer; 
-            font-size: 15px; 
-            font-weight: 600;
-            border-radius: 12px; 
-            width: 100%;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
+            padding: 16px 20px; color: white; border: none; cursor: pointer; font-size: 15px; 
+            font-weight: 600; border-radius: 12px; width: 100%; transition: transform 0.2s;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
         }
-
-        .btn-csv {
-            background: linear-gradient(135deg, #34b7f1, #2980b9);
-            box-shadow: 0 6px 15px rgba(52, 183, 241, 0.3);
-        }
-
-        .btn-vcf {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            box-shadow: 0 6px 15px rgba(37, 211, 102, 0.3);
-        }
-
+        .btn-magic { background: linear-gradient(135deg, #8e44ad, #9b59b6); box-shadow: 0 6px 15px rgba(142, 68, 173, 0.3); grid-column: span 2; margin-top: 5px; margin-bottom: 15px;}
+        .btn-csv { background: linear-gradient(135deg, #34b7f1, #2980b9); box-shadow: 0 6px 15px rgba(52, 183, 241, 0.3); }
+        .btn-vcf { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); box-shadow: 0 6px 15px rgba(37, 211, 102, 0.3); }
         button.btn-action:hover { transform: translateY(-3px); }
-        button.btn-action:active { transform: translateY(0); }
 
-        .credit-footer {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 13px;
-            color: var(--text-muted);
-            border-top: 1px solid var(--input-border);
-            padding-top: 15px;
-        }
+        .credit-footer { text-align: center; margin-top: 30px; font-size: 13px; color: var(--text-muted); border-top: 1px solid var(--input-border); padding-top: 15px; }
+        .credit-footer strong { color: var(--primary-dark); font-weight: 600; }
 
-        .credit-footer strong {
-            color: var(--primary-dark);
-            font-weight: 600;
-        }
-
-        #toast {
-            visibility: hidden;
-            min-width: 280px;
-            max-width: 90%;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 10px;
-            padding: 16px 20px;
-            position: fixed;
-            z-index: 1000;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            font-size: 14px;
-            font-weight: 500;
-            opacity: 0;
-            transition: opacity 0.3s, transform 0.3s;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            box-sizing: border-box;
-        }
-
+        #toast { visibility: hidden; min-width: 280px; max-width: 90%; background-color: #333; color: #fff; text-align: center; border-radius: 10px; padding: 16px 20px; position: fixed; z-index: 1000; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); font-size: 14px; opacity: 0; transition: opacity 0.3s, transform 0.3s; }
         #toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
         #toast.success { background-color: var(--primary-dark); }
         #toast.error { background-color: #e74c3c; }
 
-        /* ========================================================= */
-        /* RESPONSIVIDADE: CELULARES E TABLETS                       */
-        /* ========================================================= */
         @media (max-width: 768px) {
-            body { padding: 10px; }
-            .container { 
-                padding: 25px 20px; 
-                border-radius: 20px; 
-            }
-            .grid-layout, .button-group { 
-                grid-template-columns: 1fr; 
-                gap: 15px;
-            }
-            .form-group.full-width { grid-column: span 1; }
-            
-            .header-top { 
-                flex-direction: column; 
-                margin-bottom: 15px;
-            }
-            h2 { font-size: 26px; }
-            p.subtitle { font-size: 13.5px; margin-bottom: 25px; }
-            
-            #theme-toggle { 
-                position: relative; 
-                margin-top: 10px; 
-                font-size: 22px;
-            }
-
-            textarea { height: 120px; } /* Altura menor no celular para caber na tela */
-            
-            button.btn-action { 
-                padding: 18px 15px; /* Botões mais altos para facilitar o clique com o dedo */
-                font-size: 14px;
-            }
+            .container { padding: 25px 20px; }
+            .grid-layout, .button-group { grid-template-columns: 1fr; gap: 15px; }
+            .full-width { grid-column: span 1; }
+            .btn-magic { grid-column: span 1; }
+            .header-top { flex-direction: column; }
+            #theme-toggle { position: relative; margin-top: 10px; }
+            textarea { height: 120px; }
         }
     </style>
 </head>
@@ -259,32 +127,44 @@
             <h2>Extrator de Contatos</h2>
             <button id="theme-toggle" onclick="toggleTheme()" title="Mudar tema">🌙</button>
         </div>
-        <p class="subtitle">Limpeza automática e bloqueio de números duplicados ativados.</p>
+        <p class="subtitle">Cole o chat inteiro. O sistema separa e organiza para você!</p>
         
         <div class="grid-layout">
-            <div class="form-group full-width">
-                <label for="nome_grupo">🏷️ Nome do Grupo ou Prefixo</label>
+            <div class="form-group">
+                <label for="nome_grupo">🏷️ Nome do Grupo</label>
                 <input type="text" id="nome_grupo" placeholder="Ex: Novos Muçulmanos">
             </div>
 
+            <div class="form-group filtro-destaque">
+                <label for="codigo_dae">🔑 Seu Código (Filtro)</label>
+                <input type="text" id="codigo_dae" value="Por-2">
+            </div>
+
+            <div class="form-group full-width">
+                <label for="texto_geral">📋 1. Cole TUDO misturado aqui dentro:</label>
+                <textarea id="texto_geral" placeholder="Cole o chat inteiro do WhatsApp aqui..."></textarea>
+            </div>
+
+            <button class="btn-action btn-magic" onclick="separarContatos()">🪄 2. Filtrar e Separar Homens e Mulheres</button>
+
             <div class="form-group">
-                <label for="numeros_masc">👨 Textos dos Homens</label>
-                <textarea id="numeros_masc" placeholder="Cole as fichas dos homens aqui..."></textarea>
+                <label for="res_masc">👨 Homens Encontrados</label>
+                <textarea id="res_masc" placeholder="Os números vão aparecer aqui automaticamente..."></textarea>
             </div>
             
             <div class="form-group">
-                <label for="numeros_fem">👩 Textos das Mulheres</label>
-                <textarea id="numeros_fem" placeholder="Cole as fichas das mulheres aqui..."></textarea>
+                <label for="res_fem">👩 Mulheres Encontradas</label>
+                <textarea id="res_fem" placeholder="Os números vão aparecer aqui automaticamente..."></textarea>
             </div>
             
             <div class="button-group">
-                <button class="btn-action btn-csv" onclick="processarContatos('csv')">📊 Baixar Planilha (CSV)</button>
-                <button class="btn-action btn-vcf" onclick="processarContatos('vcf')">📇 Baixar Agenda (VCF)</button>
+                <button class="btn-action btn-csv" onclick="processarExportacao('csv')">📊 3. Baixar Planilha (CSV)</button>
+                <button class="btn-action btn-vcf" onclick="processarExportacao('vcf')">📇 3. Baixar Agenda (VCF)</button>
             </div>
         </div>
 
         <div class="credit-footer">
-            Este software foi criado por: <strong>Beirenesse</strong>
+            Este software foi criado por: <strong>Beirensse</strong>
         </div>
     </div>
 
@@ -292,9 +172,16 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const inputNome = document.getElementById('nome_grupo');
-            inputNome.value = localStorage.getItem('memoria_nome_grupo') || '';
-            inputNome.addEventListener('input', (e) => localStorage.setItem('memoria_nome_grupo', e.target.value));
+            const inputNomeGrupo = document.getElementById('nome_grupo');
+            const inputCodigo = document.getElementById('codigo_dae');
+            
+            inputNomeGrupo.value = localStorage.getItem('memoria_nome_grupo') || '';
+            if (localStorage.getItem('memoria_codigo')) {
+                inputCodigo.value = localStorage.getItem('memoria_codigo');
+            }
+            
+            inputNomeGrupo.addEventListener('input', (e) => localStorage.setItem('memoria_nome_grupo', e.target.value));
+            inputCodigo.addEventListener('input', (e) => localStorage.setItem('memoria_codigo', e.target.value));
             
             if(localStorage.getItem('tema_escuro') === 'sim') toggleTheme();
         });
@@ -320,37 +207,73 @@
             setTimeout(() => { toast.className = toast.className.replace(`show ${tipo}`, ""); }, 4000);
         }
 
-        function extrairTelefonesDeTexto(texto) {
-            const regex = /\+?[\d][\d\s\-\(\)]{7,20}\d/g;
-            const encontrados = texto.match(regex) || [];
-            
-            const numerosLimpos = encontrados.map(n => {
-                let sinal = n.startsWith('+') ? '+' : '';
-                let apenasNumeros = n.replace(/\D/g, '');
-                return sinal + apenasNumeros;
+        // FUNÇÃO DO BOTÃO MÁGICO (Separa e preenche as caixas de baixo)
+        function separarContatos() {
+            const codigoDae = document.getElementById('codigo_dae').value.trim().toLowerCase();
+            const texto = document.getElementById('texto_geral').value;
+
+            if (!texto.trim()) {
+                mostrarNotificacao('⚠️ Cole as mensagens no quadro misturado primeiro!', 'error');
+                return;
+            }
+
+            let telefonesMasc = [];
+            let telefonesFem = [];
+
+            const blocosDeFichas = texto.split(/(?=✅|\*الله)/);
+
+            blocosDeFichas.forEach(bloco => {
+                const blocoMinusculo = bloco.toLowerCase();
+
+                if (codigoDae && !blocoMinusculo.includes(codigoDae)) return; 
+
+                const regexPhone = /\+?[\d][\d\s\-\(\)]{7,20}\d/;
+                const match = bloco.match(regexPhone);
+                
+                if (match) {
+                    let numero = match[0].replace(/\D/g, '');
+                    if (match[0].startsWith('+')) numero = '+' + numero;
+                    
+                    if (numero.length >= 8) {
+                        if (blocoMinusculo.includes('masculino')) {
+                            telefonesMasc.push(numero);
+                        } else if (blocoMinusculo.includes('femenino') || blocoMinusculo.includes('feminino') || blocoMinusculo.includes('fem')) {
+                            telefonesFem.push(numero);
+                        }
+                    }
+                }
             });
 
-            const filtrados = numerosLimpos.filter(n => n.length >= 8);
-            return [...new Set(filtrados)];
+            // Remove duplicados e exibe nas caixas na tela
+            telefonesMasc = [...new Set(telefonesMasc)];
+            telefonesFem = [...new Set(telefonesFem)];
+
+            document.getElementById('res_masc').value = telefonesMasc.join('\n');
+            document.getElementById('res_fem').value = telefonesFem.join('\n');
+
+            mostrarNotificacao(`✅ Organizado: ${telefonesMasc.length} Homens e ${telefonesFem.length} Mulheres encontrados!`, 'success');
         }
 
-        function processarContatos(tipoExportacao) {
+        // Função que lê as caixas separadas para gerar o arquivo
+        function pegarNumeros(id) {
+            return document.getElementById(id).value.split('\n').map(n => n.trim()).filter(n => n.length >= 8);
+        }
+
+        function processarExportacao(tipoExportacao) {
             let nomeGrupo = document.getElementById('nome_grupo').value.trim() || "Contato"; 
-            const textoMasc = document.getElementById('numeros_masc').value;
-            const textoFem = document.getElementById('numeros_fem').value;
             
-            const telMasc = extrairTelefonesDeTexto(textoMasc);
-            const telFem = extrairTelefonesDeTexto(textoFem);
+            const telMasc = pegarNumeros('res_masc');
+            const telFem = pegarNumeros('res_fem');
 
             if (telMasc.length === 0 && telFem.length === 0) {
-                mostrarNotificacao('⚠️ Nenhum número válido encontrado.', 'error');
+                mostrarNotificacao('⚠️ Não há contatos. Clique em "Filtrar e Separar" primeiro.', 'error');
                 return;
             }
 
             if (tipoExportacao === 'csv') gerarCSV(telMasc, telFem, nomeGrupo);
             else gerarVCF(telMasc, telFem, nomeGrupo);
 
-            mostrarNotificacao(`✅ Sucesso! ${telMasc.length} homens e ${telFem.length} mulheres processados sem duplicatas.`, 'success');
+            mostrarNotificacao(`✅ Download Concluído!`, 'success');
         }
 
         function gerarCSV(telMasc, telFem, nomeGrupo) {
