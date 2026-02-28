@@ -76,7 +76,22 @@
             font-weight: 600;
         }
 
-        label { display: block; color: var(--primary-dark); font-weight: 500; margin-bottom: 8px; font-size: 14px; }
+        /* ESTILO DOS CONTADORES (BADGES) */
+        .badge {
+            display: inline-block;
+            background-color: var(--primary);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+            vertical-align: middle;
+            transition: all 0.3s;
+        }
+        .badge.zero { background-color: #bdc3c7; color: #fff; } /* Fica cinza quando é zero */
+
+        label { display: flex; align-items: center; color: var(--primary-dark); font-weight: 500; margin-bottom: 8px; font-size: 14px; }
 
         input[type="text"], textarea { 
             width: 100%; padding: 16px; border: 2px solid var(--input-border); border-radius: 12px;
@@ -87,7 +102,12 @@
         input[type="text"]:focus, textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(37, 211, 102, 0.1); }
         
         textarea { height: 140px; resize: none; }
-        #texto_geral { height: 160px; border-color: #34b7f1; } /* Caixa principal destacada */
+        #texto_geral { height: 160px; border-color: #34b7f1; } 
+
+        .button-group-magic {
+            grid-column: span 2; display: grid; grid-template-columns: 2fr 1fr; gap: 15px;
+            margin-top: 5px; margin-bottom: 15px;
+        }
 
         .button-group { grid-column: span 2; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
 
@@ -96,10 +116,13 @@
             font-weight: 600; border-radius: 12px; width: 100%; transition: transform 0.2s;
             display: flex; justify-content: center; align-items: center; gap: 8px;
         }
-        .btn-magic { background: linear-gradient(135deg, #8e44ad, #9b59b6); box-shadow: 0 6px 15px rgba(142, 68, 173, 0.3); grid-column: span 2; margin-top: 5px; margin-bottom: 15px;}
+        .btn-magic { background: linear-gradient(135deg, #8e44ad, #9b59b6); box-shadow: 0 6px 15px rgba(142, 68, 173, 0.3); }
+        .btn-clear { background: linear-gradient(135deg, #e74c3c, #c0392b); box-shadow: 0 6px 15px rgba(231, 76, 60, 0.3); } 
         .btn-csv { background: linear-gradient(135deg, #34b7f1, #2980b9); box-shadow: 0 6px 15px rgba(52, 183, 241, 0.3); }
         .btn-vcf { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); box-shadow: 0 6px 15px rgba(37, 211, 102, 0.3); }
+        
         button.btn-action:hover { transform: translateY(-3px); }
+        button.btn-action:active { transform: translateY(0); }
 
         .credit-footer { text-align: center; margin-top: 30px; font-size: 13px; color: var(--text-muted); border-top: 1px solid var(--input-border); padding-top: 15px; }
         .credit-footer strong { color: var(--primary-dark); font-weight: 600; }
@@ -111,9 +134,8 @@
 
         @media (max-width: 768px) {
             .container { padding: 25px 20px; }
-            .grid-layout, .button-group { grid-template-columns: 1fr; gap: 15px; }
+            .grid-layout, .button-group, .button-group-magic { grid-template-columns: 1fr; gap: 15px; }
             .full-width { grid-column: span 1; }
-            .btn-magic { grid-column: span 1; }
             .header-top { flex-direction: column; }
             #theme-toggle { position: relative; margin-top: 10px; }
             textarea { height: 120px; }
@@ -141,19 +163,31 @@
             </div>
 
             <div class="form-group full-width">
-                <label for="texto_geral">📋 1. Cole TUDO misturado aqui dentro:</label>
+                <label for="texto_geral">
+                    📋 1. Cole TUDO misturado aqui dentro: 
+                    <span id="count_total" class="badge zero">0</span>
+                </label>
                 <textarea id="texto_geral" placeholder="Cole o chat inteiro do WhatsApp aqui..."></textarea>
             </div>
 
-            <button class="btn-action btn-magic" onclick="separarContatos()">🪄 2. Filtrar e Separar Homens e Mulheres</button>
+            <div class="button-group-magic">
+                <button class="btn-action btn-magic" onclick="separarContatos()">🪄 2. Filtrar e Separar</button>
+                <button class="btn-action btn-clear" onclick="limparTudo()">🗑️ Limpar</button>
+            </div>
 
             <div class="form-group">
-                <label for="res_masc">👨 Homens Encontrados</label>
+                <label for="res_masc">
+                    👨 Homens Encontrados 
+                    <span id="count_masc" class="badge zero">0</span>
+                </label>
                 <textarea id="res_masc" placeholder="Os números vão aparecer aqui automaticamente..."></textarea>
             </div>
             
             <div class="form-group">
-                <label for="res_fem">👩 Mulheres Encontradas</label>
+                <label for="res_fem">
+                    👩 Mulheres Encontradas 
+                    <span id="count_fem" class="badge zero">0</span>
+                </label>
                 <textarea id="res_fem" placeholder="Os números vão aparecer aqui automaticamente..."></textarea>
             </div>
             
@@ -174,6 +208,7 @@
         document.addEventListener("DOMContentLoaded", () => {
             const inputNomeGrupo = document.getElementById('nome_grupo');
             const inputCodigo = document.getElementById('codigo_dae');
+            const textoGeral = document.getElementById('texto_geral');
             
             inputNomeGrupo.value = localStorage.getItem('memoria_nome_grupo') || '';
             if (localStorage.getItem('memoria_codigo')) {
@@ -184,7 +219,33 @@
             inputCodigo.addEventListener('input', (e) => localStorage.setItem('memoria_codigo', e.target.value));
             
             if(localStorage.getItem('tema_escuro') === 'sim') toggleTheme();
+
+            // EVENTO QUE CONTA AO VIVO ENQUANTO VOCÊ COLA O TEXTO
+            textoGeral.addEventListener('input', function() {
+                contarNumerosColados(this.value);
+            });
         });
+
+        // FUNÇÃO PARA ATUALIZAR OS NÚMEROS DAS BADGES
+        function atualizarBadge(id, numero) {
+            const badge = document.getElementById(id);
+            badge.innerText = numero;
+            if (numero > 0) {
+                badge.classList.remove('zero');
+            } else {
+                badge.classList.add('zero');
+            }
+        }
+
+        // FUNÇÃO QUE CONTA QUANTOS NÚMEROS FORAM COLADOS NO GERAL
+        function contarNumerosColados(texto) {
+            const regexPhone = /\+?[\d][\d\s\-\(\)]{7,20}\d/g;
+            const matches = texto.match(regexPhone) || [];
+            
+            // Só conta como ficha se for um número de tamanho real de celular
+            const numerosValidos = matches.filter(m => m.replace(/\D/g, '').length >= 8);
+            atualizarBadge('count_total', numerosValidos.length);
+        }
 
         function toggleTheme() {
             const body = document.body;
@@ -207,7 +268,21 @@
             setTimeout(() => { toast.className = toast.className.replace(`show ${tipo}`, ""); }, 4000);
         }
 
-        // FUNÇÃO DO BOTÃO MÁGICO (Separa e preenche as caixas de baixo)
+        function limparTudo() {
+            const textoGeral = document.getElementById('texto_geral');
+            textoGeral.value = '';
+            document.getElementById('res_masc').value = '';
+            document.getElementById('res_fem').value = '';
+            
+            // Zera todos os contadores
+            atualizarBadge('count_total', 0);
+            atualizarBadge('count_masc', 0);
+            atualizarBadge('count_fem', 0);
+
+            mostrarNotificacao('🧹 Tudo limpo! Pronto para colar a próxima lista.', 'success');
+            textoGeral.focus();
+        }
+
         function separarContatos() {
             const codigoDae = document.getElementById('codigo_dae').value.trim().toLowerCase();
             const texto = document.getElementById('texto_geral').value;
@@ -244,17 +319,19 @@
                 }
             });
 
-            // Remove duplicados e exibe nas caixas na tela
             telefonesMasc = [...new Set(telefonesMasc)];
             telefonesFem = [...new Set(telefonesFem)];
 
             document.getElementById('res_masc').value = telefonesMasc.join('\n');
             document.getElementById('res_fem').value = telefonesFem.join('\n');
 
+            // Atualiza as bolinhas com os números de homens e mulheres!
+            atualizarBadge('count_masc', telefonesMasc.length);
+            atualizarBadge('count_fem', telefonesFem.length);
+
             mostrarNotificacao(`✅ Organizado: ${telefonesMasc.length} Homens e ${telefonesFem.length} Mulheres encontrados!`, 'success');
         }
 
-        // Função que lê as caixas separadas para gerar o arquivo
         function pegarNumeros(id) {
             return document.getElementById(id).value.split('\n').map(n => n.trim()).filter(n => n.length >= 8);
         }
