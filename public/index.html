@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Extrator Inteligente de Contatos</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#128C7E">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3616/3616215.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
@@ -252,6 +257,15 @@
     <div id="toast"></div>
 
     <script>
+        // REGISTO DA PWA (SERVICE WORKER)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('PWA Ativado!'))
+                .catch(err => console.log('Erro no PWA:', err));
+            });
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
             const inputNomeGrupo = document.getElementById('nome_grupo');
             const inputCodigo = document.getElementById('codigo_dae');
