@@ -269,18 +269,26 @@
             const filtroTexto = document.getElementById('codigo_dae').value.trim();
             
             listaHomens = []; listaMulheres = [];
-            const blocos = textoOriginal.split(/\n\s*\n/);
+            
+            // INTELIGÊNCIA ATUALIZADA: Lê espaços vazios OU os emojis/palavras novas
+            const blocos = textoOriginal.split(/(?=الله اكبر|✅|Nome\s*:|الإسم\s*:|الاسم\s*:|\n\s*\n)/i);
 
             blocos.forEach(bloco => {
+                if (bloco.trim() === "") return;
+
                 if (filtroTexto !== "" && !bloco.toLowerCase().includes(filtroTexto.toLowerCase())) return; 
                 
-                const telefoneMatch = bloco.match(/\+\d{10,15}/);
+                // Telefone: Permite ler números com espaços (ex: +258 84 216 4525)
+                const telefoneMatch = bloco.match(/\+(?:[\s]*\d){10,15}/);
                 if (!telefoneMatch) return; 
                 
-                const telefone = telefoneMatch[0];
+                // Limpa os espaços para o telefone funcionar na agenda
+                const telefone = telefoneMatch[0].replace(/\s/g, '');
+                
                 let nome = "Contato Extraído";
 
-                const nomeMatch = bloco.match(/(?:Nome|الإسم|Name)\s*:\s*([^\n,]+)/i);
+                // Nome: Lê tanto "الإسم" (com acento) quanto "الاسم" (sem acento)
+                const nomeMatch = bloco.match(/(?:Nome|الإسم|الاسم|Name)\s*:\s*([^\n,]+)/i);
                 if (nomeMatch) nome = nomeMatch[1].trim();
 
                 const isFeminino = /feminino|mulher|femme|female|أنثى|♀️/i.test(bloco);
