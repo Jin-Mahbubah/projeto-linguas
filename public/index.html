@@ -176,16 +176,6 @@
     </div>
 
     <script>
-        function alternarTema() {
-            document.body.classList.toggle('dark-mode');
-            const btnTema = document.getElementById('btn_tema');
-            if (document.body.classList.contains('dark-mode')) {
-                btnTema.innerText = '☀️'; 
-            } else {
-                btnTema.innerText = '🌙'; 
-            }
-        }
-
         const traducoes = {
             pt: {
                 titulo: "🏷️ Extrator de Contatos", sub: "Desenvolvido com ❤️ por <strong>Beirensse</strong>",
@@ -225,6 +215,16 @@
             }
         };
 
+        function alternarTema() {
+            document.body.classList.toggle('dark-mode');
+            const btnTema = document.getElementById('btn_tema');
+            if (document.body.classList.contains('dark-mode')) {
+                btnTema.innerText = '☀️'; 
+            } else {
+                btnTema.innerText = '🌙'; 
+            }
+        }
+
         function mudarIdioma() {
             const idioma = document.getElementById('idioma_select').value;
             const t = traducoes[idioma];
@@ -252,6 +252,9 @@
             }
         }
 
+        let listaHomens = [];
+        let listaMulheres = [];
+
         function limparTudo() {
             document.getElementById('texto_geral').value = '';
             listaHomens = [];
@@ -261,16 +264,14 @@
             document.getElementById('count_total').innerText = "0";
         }
 
-        let listaHomens = [];
-        let listaMulheres = [];
-
         function filtrarContatos() {
             const textoOriginal = document.getElementById('texto_geral').value;
             const filtroTexto = document.getElementById('codigo_dae').value.trim();
             
-            listaHomens = []; listaMulheres = [];
+            listaHomens = []; 
+            listaMulheres = [];
             
-            // INTELIGÊNCIA ATUALIZADA: Lê espaços vazios OU os emojis/palavras novas
+            // Corte para separar cada contato independentemente de espaçamento
             const blocos = textoOriginal.split(/(?=الله اكبر|✅|Nome\s*:|الإسم\s*:|الاسم\s*:|\n\s*\n)/i);
 
             blocos.forEach(bloco => {
@@ -278,23 +279,22 @@
 
                 if (filtroTexto !== "" && !bloco.toLowerCase().includes(filtroTexto.toLowerCase())) return; 
                 
-                // Telefone: Permite ler números com espaços (ex: +258 84 216 4525)
+                // Extrai o telefone mesmo que tenha espaços
                 const telefoneMatch = bloco.match(/\+(?:[\s]*\d){10,15}/);
                 if (!telefoneMatch) return; 
                 
-                // Limpa os espaços para o telefone funcionar na agenda
+                // Limpa os espaços para o VCF ler perfeitamente
                 const telefone = telefoneMatch[0].replace(/\s/g, '');
                 
-                let nome = "Contato Extraído";
-
-                // Nome: Lê tanto "الإسم" (com acento) quanto "الاسم" (sem acento)
-                const nomeMatch = bloco.match(/(?:Nome|الإسم|الاسم|Name)\s*:\s*([^\n,]+)/i);
-                if (nomeMatch) nome = nomeMatch[1].trim();
-
+                // Verifica o género
                 const isFeminino = /feminino|mulher|femme|female|أنثى|♀️/i.test(bloco);
                 
-                if (isFeminino) listaMulheres.push({ nome: nome, telefone: telefone });
-                else listaHomens.push({ nome: nome, telefone: telefone });
+                // Agora guarda APENAS o telefone na lista, pois ignoramos o nome real
+                if (isFeminino) {
+                    listaMulheres.push(telefone);
+                } else {
+                    listaHomens.push(telefone);
+                }
             });
 
             document.getElementById('count_masc').innerText = listaHomens.length;
@@ -306,18 +306,27 @@
             if (listaHomens.length === 0 && listaMulheres.length === 0) return;
 
             let nomeGrupo = document.getElementById('nome_grupo').value.trim();
-            let sufixoGrupo = nomeGrupo !== "" ? ` - ${nomeGrupo}` : "";
+            // Se o grupo tiver nome, adiciona um traço (Ex: "Novos Muçulmanos - ")
+            let prefixoGrupo = nomeGrupo !== "" ? nomeGrupo + " - " : "";
 
             let vcfContent = "";
+            let contador = 1;
 
-            listaHomens.forEach(c => {
-                vcfContent += "BEGIN:VCARD\nVERSION:3.0\nFN:" + c.nome + sufixoGrupo + " (H)\nTEL;TYPE=CELL:" + c.telefone + "\nEND:VCARD\n";
+            // Gera a agenda dos Homens
+            listaHomens.forEach(telefone => {
+                vcfContent += "BEGIN:VCARD\nVERSION:3.0\nFN:" + prefixoGrupo + "Masc " + contador + "\nTEL;TYPE=CELL:" + telefone + "\nEND:VCARD\n";
+                contador++;
             });
 
-            listaMulheres.forEach(c => {
-                vcfContent += "BEGIN:VCARD\nVERSION:3.0\nFN:" + c.nome + sufixoGrupo + " (M)\nTEL;TYPE=CELL:" + c.telefone + "\nEND:VCARD\n";
+            contador = 1;
+            
+            // Gera a agenda das Mulheres
+            listaMulheres.forEach(telefone => {
+                vcfContent += "BEGIN:VCARD\nVERSION:3.0\nFN:" + prefixoGrupo + "Fem " + contador + "\nTEL;TYPE=CELL:" + telefone + "\nEND:VCARD\n";
+                contador++;
             });
 
+            // Faz o download automático do arquivo VCF
             const blob = new Blob([vcfContent], { type: 'text/vcard' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -328,14 +337,11 @@
             document.body.removeChild(a);
         }
 
-        /* =========================================
-           O "MATA-OFFLINE" (Remove a Cache Antiga)
-           ========================================= */
+        // Script de limpeza do Cache offline anterior
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(function(registrations) {
                 for(let registration of registrations) {
                     registration.unregister();
-                    console.log('✅ Sistema Offline Removido e Limpo.');
                 }
             });
         }
